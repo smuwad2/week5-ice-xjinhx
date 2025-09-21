@@ -24,9 +24,44 @@
         </div>
         <script>
             function getData() {
- 
+                const type = document.getElementById("type").value;
+                const limitval = document.getElementById("limit").value;
+                let url = "/data?type=" + type + "&limit=" + limitval;
+            
+                axios.get(url)
+                .then(response=>{
+                    generateTable(response.data, type);
+                })
+                .catch(error => console.error(error));
             }
 
+            function generateTable(dataObj, type) {
+                const h2Element = document.querySelector("#result h2");
+                h2Element.innerText = type;
+                
+                const limitval = document.getElementById("limit").value;
+                let records = dataObj.records;
+                let keys = Object.keys(records[0]);
+                
+                const thead = document.querySelector("#result thead");
+                let headerHTML = "<tr>";
+                keys.forEach(key => {
+                    headerHTML += "<th>" + key + "</th>";
+                });
+                headerHTML += "</tr>";
+                thead.innerHTML = headerHTML;
+                
+                const tbody = document.querySelector("#result tbody");
+                let bodyHTML = "";
+                for (let i = 0; i < limitval && i < records.length; i++){
+                    bodyHTML += "<tr>";
+                    keys.forEach(key=>{
+                        bodyHTML += "<td>" + records[i][key] + "</td>";
+                    })
+                    bodyHTML += "</tr>";
+                }
+                tbody.innerHTML = bodyHTML;
+            }
         </script>
 </body>
 </html>
