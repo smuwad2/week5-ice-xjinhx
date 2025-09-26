@@ -21,29 +21,27 @@
         </div>
 
         <script>
-            async function showHint() {
-                const input = document.getElementById('nameInput');
-                const suggestionsElement = document.getElementById('suggestions');
-                const query = input.value.trim();
-                
-                if (query === '') {
-                    suggestionsElement.textContent = 'see suggestions';
-                    return;
+            
+            // add event handler code here
+            
+            function showHint(){
+                axios.get('/suggest', {params: {
+                    'query':document.getElementById("nameInput").value
                 }
-                
-                try {
-                    const response = await axios.get('/suggest');
-                    
-                    if (response.data!== '') {
-                        suggestionsElement.textContent = response.data;
-                    } else {
-                        suggestionsElement.textContent = 'no suggestion';
-                    }
-                } catch (error) {
-                    console.error('Error fetching suggestions:', error);
-                    suggestionsElement.textContent = 'Error loading suggestions';
-                }
+                })
+                // use '/suggest' as the url cuz web server & express server is the same thing 
+                .then(response =>  {
+                    console.log(response.data);
+                    const suggestions = response.data;
+                    // data is alw contained within data key 
+                    document.getElementById("suggestions").innerText = suggestions;
+                })
+                .catch(error => {
+                    console.log(error);
+                });  
             }
+
+        
 
         </script>
 
